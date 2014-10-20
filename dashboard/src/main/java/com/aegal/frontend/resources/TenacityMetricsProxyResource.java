@@ -8,12 +8,17 @@ import java.net.URL;
 import javax.ws.rs.*;
 import javax.ws.rs.core.StreamingOutput;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Preconditions;
+
 /**
  * Deploys new applications. User: A.Egal Date: 8/14/14 Time: 10:21 PM
  */
 @Path("/tenacity")
 public class TenacityMetricsProxyResource {
 
+    private final CharMatcher validHostNameChars = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.anyOf(":-."));
+    
     /**
      * This resource method proxies the tenacity metrics stream of a given
      * server.
@@ -31,7 +36,11 @@ public class TenacityMetricsProxyResource {
     @Produces("text/event-stream")
     public StreamingOutput getMetricsStream(
 	    @PathParam("server") final String hostname,
-	    @PathParam("port") final String port) {
+	    @PathParam("port") final int port) {
+	
+	Preconditions.checkArgument(validHostNameChars.matchesAllOf(hostname),
+		"hostname must not contain any other characters than java letters and digits, dots, hyphens and colons.");
+	
 	return new StreamingOutput() {
 
 	    @Override
