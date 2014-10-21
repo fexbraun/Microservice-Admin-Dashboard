@@ -70,7 +70,7 @@ angular.module('adminDashboardApp')
 
         var hystrixMonitor = new HystrixCommandMonitor('dependencies', {includeDetailIcon:false});
 
-        source = new EventSource('/tenacity/metrics.stream.proxy/' + service.data.listenAddress + '/' + service.data.listenPort);
+        source = new EventSource('api/tenacity/metrics.stream.proxy/' + service.data.listenAddress + '/' + service.data.listenPort);
 
         source.addEventListener('message', hystrixMonitor.eventSourceMessageListener, false);
 
